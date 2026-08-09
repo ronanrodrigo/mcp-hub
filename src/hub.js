@@ -1,28 +1,12 @@
-import { loadAllMCPs } from "./mcps-loader.js";
-import {
-  HUB_DESCRIPTION,
-  HUB_NAME,
-  HUB_VERSION
-} from "./constants.js";
+import { discovery } from './tools/discovery.js';
+import { createMcpServer } from './mcp-server.js';
 
-export async function getHubMetadata() {
-  const allMCPs = await loadAllMCPs();
-
+export function createHub() {
   return {
-    success: true,
-    hub: {
-      name: HUB_NAME,
-      version: HUB_VERSION,
-      description: HUB_DESCRIPTION,
-      status: "running"
+    server: createMcpServer(),
+    async callTool(name, args = {}) {
+      if (name !== 'discovery') throw new Error(`Unknown tool: ${name}`);
+      return discovery(args);
     },
-    stats: {
-      totalMCPs: allMCPs.length,
-      totalEndpoints: allMCPs.reduce(
-        (sum, mcp) => sum + (Array.isArray(mcp.endpoints) ? mcp.endpoints.length : 0),
-        0
-      )
-    },
-    mcps: allMCPs
   };
 }

@@ -1,12 +1,10 @@
-import { isValidApiKey } from "../../src/auth.js";
+import { requireApiKey } from '../../src/auth.js';
 
-export default function handler(req, res) {
-  if (!isValidApiKey(req.headers["x-api-key"])) {
-    return res.status(401).json({ error: "Unauthorized" });
+export default function handler(request, response) {
+  if (!requireApiKey(request, response)) return;
+  if (request.method !== 'GET') {
+    response.status(405).json({ success: false, error: 'Method Not Allowed' });
+    return;
   }
-
-  return res.status(200).json({
-    success: true,
-    message: "Hello World"
-  });
+  response.status(200).json({ success: true, message: 'Hello World' });
 }

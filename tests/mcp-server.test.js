@@ -1,14 +1,15 @@
-import { describe, expect, it } from "vitest";
-import { createHelloWorldMcpServer } from "../src/mcp-server.js";
+import { describe, expect, it } from 'vitest';
+import { createMcpServer, listHubTools } from '../src/mcp-server.js';
+import { createHub } from '../src/hub.js';
 
-describe("Hello World MCP server", () => {
-  it("creates an MCP server with the hello_world tool", () => {
-    const server = createHelloWorldMcpServer();
-
+describe('MCP hub server', () => {
+  it('initializes with the official SDK and exposes discovery', () => {
+    const server = createMcpServer();
     expect(server).toBeDefined();
-    expect(server.serverInfo).toMatchObject({
-      name: "hello-world",
-      version: "1.0.0"
-    });
+    expect(listHubTools().map((tool) => tool.name)).toContain('discovery');
+  });
+  it('provides a future-proof tool dispatch boundary', async () => {
+    const result = await createHub().callTool('discovery');
+    expect(result.success).toBe(true);
   });
 });

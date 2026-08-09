@@ -1,33 +1,22 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { discovery, discoveryTool } from './tools/discovery.js';
 
-export function createHelloWorldMcpServer() {
-  const server = new McpServer({
-    name: "hello-world",
-    version: "1.0.0"
+export function createMcpServer() {
+  const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
+  server.registerTool(discoveryTool.name, {
+    title: discoveryTool.title,
+    description: discoveryTool.description,
+    inputSchema: discoveryTool.inputSchema,
+  }, async () => {
+    const result = await discovery();
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result) }],
+      structuredContent: result,
+    };
   });
-
-  server.registerTool(
-    "hello_world",
-    {
-      title: "Hello World",
-      description: "Retorna uma mensagem Hello World.",
-      outputSchema: {
-        success: "boolean",
-        message: "string"
-      }
-    },
-    async () => {
-      const output = {
-        success: true,
-        message: "Hello World"
-      };
-
-      return {
-        content: [{ type: "text", text: output.message }],
-        structuredContent: output
-      };
-    }
-  );
-
   return server;
+}
+
+export function listHubTools() {
+  return [discoveryTool];
 }

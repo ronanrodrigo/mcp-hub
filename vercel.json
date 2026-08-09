@@ -1,18 +1,11 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "functions": {
+    "api/start.js": { "runtime": "nodejs18.x" },
+    "api/hello-world/hello-world.js": { "runtime": "nodejs18.x" }
+  },
   "routes": [
-    {
-      "src": "^/$",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "^/api/hello-world/mcp$",
-      "dest": "/api/hello-world/mcp.js"
-    },
-    {
-      "src": "^/api/hello-world/hello-world$",
-      "dest": "/api/hello-world/hello-world.js"
-    }
+    { "src": "^/start$", "dest": "/api/start.js" },
+    { "src": "^/api/hello-world/hello-world$", "dest": "/api/hello-world/hello-world.js" }
   ]
 }

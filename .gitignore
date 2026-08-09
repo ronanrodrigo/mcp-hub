@@ -1,7 +1,5 @@
-node_modules
-.vercel
-coverage
+node_modules/
+.vercel/
+coverage/
 .env
-.env.*
-!.env.example
 .DS_Store
