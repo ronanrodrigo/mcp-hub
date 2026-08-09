@@ -1,0 +1,72 @@
+{
+  "name": "world-monitor",
+  "version": "1.0.0",
+  "description": "Real-time global intelligence from World Monitor, including geopolitical, market, aviation, maritime, cyber, disaster, health and forecasting data.",
+  "author": "World Monitor",
+  "source": "https://mcpmarket.com/server/world-monitor",
+  "transport": "streamable-http",
+  "tags": ["intelligence", "geopolitics", "markets", "osint", "monitoring"],
+  "tools": [
+    {
+      "name": "get_country_risk",
+      "title": "Get country risk",
+      "description": "Retrieve World Monitor country risk and resilience data.",
+      "inputSchema": { "type": "object", "properties": { "country": { "type": "string", "description": "Country name or ISO code." } }, "required": ["country"] }
+    },
+    {
+      "name": "get_world_brief",
+      "title": "Get world brief",
+      "description": "Retrieve a current global intelligence brief.",
+      "inputSchema": { "type": "object", "properties": {}, "additionalProperties": true }
+    },
+    {
+      "name": "get_country_brief",
+      "title": "Get country brief",
+      "description": "Retrieve a current intelligence brief for a country.",
+      "inputSchema": { "type": "object", "properties": { "country": { "type": "string", "description": "Country name or ISO code." } }, "required": ["country"] }
+    },
+    {
+      "name": "get_market_data",
+      "title": "Get market data",
+      "description": "Retrieve live or cache-backed market data.",
+      "inputSchema": { "type": "object", "properties": { "symbols": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": true }
+    },
+    {
+      "name": "get_chokepoint_status",
+      "title": "Get chokepoint status",
+      "description": "Retrieve maritime chokepoint and supply-chain status.",
+      "inputSchema": { "type": "object", "properties": {}, "additionalProperties": true }
+    },
+    {
+      "name": "get_news_intelligence",
+      "title": "Get news intelligence",
+      "description": "Retrieve aggregated and correlated global news intelligence.",
+      "inputSchema": { "type": "object", "properties": { "query": { "type": "string" } }, "additionalProperties": true }
+    },
+    {
+      "name": "get_conflict_events",
+      "title": "Get conflict events",
+      "description": "Retrieve current conflict and unrest events.",
+      "inputSchema": { "type": "object", "properties": { "country": { "type": "string" } }, "additionalProperties": true }
+    },
+    {
+      "name": "get_natural_disasters",
+      "title": "Get natural disasters",
+      "description": "Retrieve current natural-disaster signals.",
+      "inputSchema": { "type": "object", "properties": { "region": { "type": "string" } }, "additionalProperties": true }
+    },
+    {
+      "name": "get_prediction_markets",
+      "title": "Get prediction markets",
+      "description": "Retrieve relevant prediction-market data.",
+      "inputSchema": { "type": "object", "properties": { "query": { "type": "string" } }, "additionalProperties": true }
+    },
+    {
+      "name": "get_forecast_predictions",
+      "title": "Get forecast predictions",
+      "description": "Retrieve AI-generated forecasts from World Monitor.",
+      "inputSchema": { "type": "object", "properties": { "query": { "type": "string" } }, "additionalProperties": true }
+    }
+  ],
+  "endpoints": []
+}
