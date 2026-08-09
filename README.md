@@ -7,10 +7,28 @@ MCP Hub privado, em JavaScript, pronto para Vercel. O serviço central registra 
 * `src/mcp-server.js` cria um `McpServer` usando o SDK oficial do Model Context Protocol (`@modelcontextprotocol/sdk`), publicado pelo repositório `modelcontextprotocol/typescript-sdk`.
 * `src/tools/discovery.js` implementa a tool `discovery`.
 * `src/mcps-loader.js` lê dinamicamente todos os `api/*/properties.json`.
-* `api/start.js` expõe o resultado da execução da tool via HTTP `GET` ou `POST /start`.
+* `api/mcp.js` expõe o servidor MCP usando `StreamableHTTPServerTransport`.
+* `api/start.js` expõe o resultado da tool via HTTP `GET` ou `POST /start`.
 * Cada MCP pode ter seu próprio handler HTTP e metadata estático.
 
 > O nome do pacote npm do SDK oficial é `@modelcontextprotocol/sdk`; o repositório upstream é `modelcontextprotocol/typescript-sdk`.
+
+## Configuração no Raycast iOS
+
+Use um MCP Server com:
+
+* **Name:** `MCP Hub`
+* **URL:** `https://mcp-hub-omega.vercel.app/mcp`
+* **OAuth Type:** `None`
+* **Headers:**
+
+```json
+{
+  "x-api-key": "fixed-secret-key"
+}
+```
+
+O servidor utiliza transporte MCP Streamable HTTP em modo stateless, compatível com funções serverless da Vercel.
 
 ## Uso local
 
@@ -27,10 +45,11 @@ A chave padrão é `fixed-secret-key`. Em produção, configure `API_KEY` na Ver
 
 ## Rotas
 
-* `GET /start` e `POST /start`: executam a tool MCP `discovery`.
+* `POST /mcp`: transporte MCP Streamable HTTP para clientes MCP.
+* `GET /start` e `POST /start`: executam a tool MCP `discovery` como JSON HTTP.
 * `GET /api/hello-world/hello-world`: retorna `{ "success": true, "message": "Hello World" }`.
 
-Todas as rotas exigem autenticação. Sem chave ou com chave incorreta, retornam `401`.
+Todas as rotas exigem autenticação, exceto `OPTIONS` para CORS. Sem chave ou com chave incorreta, retornam `401`.
 
 ## Adicionando um MCP
 
@@ -43,6 +62,6 @@ A tool `discovery` encontrará o novo MCP automaticamente, sem registro manual.
 
 ## Deploy
 
-O projeto fixa o runtime de build e funções no Node.js `24.x`, evitando upgrades automáticos de major do Node.js na Vercel. Importe o repositório na Vercel, configure `API_KEY` nas Environment Variables e faça o deploy.
+O projeto fixa o runtime de build e funções no Node.js `24.x`. Importe o repositório na Vercel, configure `API_KEY` nas Environment Variables e faça o deploy.
 
 O workflow `.github/workflows/tests.yml` executa os testes em cada pull request.
