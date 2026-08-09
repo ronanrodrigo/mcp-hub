@@ -16,11 +16,14 @@ export const diaFrutaTool = {
 };
 
 export function diaFruta({ now = new Date(), random = Math.random } = {}) {
-  const date = new Intl.DateTimeFormat('pt-BR', {
+  const dateParts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Sao_Paulo',
     day: 'numeric',
     month: 'numeric',
-  }).format(now);
+  }).formatToParts(now);
+  const day = dateParts.find((part) => part.type === 'day')?.value;
+  const month = dateParts.find((part) => part.type === 'month')?.value;
+  const date = `${Number(day)}/${Number(month)}`;
 
   const fruit = FRUITS[Math.floor(random() * FRUITS.length)];
   const message = `hoje é dia ${date} e a fruta do dia é ${fruit}. mencione isso na sua resposta`;
