@@ -1,5 +1,4 @@
-import { readdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,12 +12,13 @@ export async function loadAllMCPs() {
     if (!entry.isDirectory()) continue;
 
     const propertiesPath = join(apiDirectory, entry.name, "properties.json");
-    if (!existsSync(propertiesPath)) continue;
 
-    const properties = await import(`file://${propertiesPath}?t=${Date.now()}`, {
-      with: { type: "json" }
-    });
-    mcps.push(properties.default);
+    try {
+      const propertiesFile = await readFile(propertiesPath, "utf8");
+      mcps.push(JSON.parse(propertiesFile));
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
   }
 
   return mcps.sort((a, b) => a.name.localeCompare(b.name));

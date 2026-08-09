@@ -49,7 +49,7 @@ A variável `API_KEY` tem precedência sobre a chave padrão. Em produção, con
 
 1. Instale e autentique a Vercel CLI.
 2. Execute `vercel` na raiz do projeto ou importe o repositório no painel da Vercel.
-3. Configure `API_KEY` nas Environment Variables.
+3. Configure `API_KEY` nas Environment Variables para os ambientes desejados.
 4. Faça o deploy de produção com `vercel --prod`.
 
 O `vercel.json` define as funções e rotas necessárias.
