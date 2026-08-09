@@ -1,11 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "api/start.js": { "runtime": "nodejs18.x" },
-    "api/hello-world/hello-world.js": { "runtime": "nodejs18.x" }
-  },
-  "routes": [
-    { "src": "^/start$", "dest": "/api/start.js" },
-    { "src": "^/api/hello-world/hello-world$", "dest": "/api/hello-world/hello-world.js" }
+  "rewrites": [
+    { "source": "/start", "destination": "/api/start" },
+    { "source": "/api/hello-world/hello-world", "destination": "/api/hello-world/hello-world.js" }
   ]
 }

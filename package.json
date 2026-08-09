@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=18" },
+  "engines": { "node": ">=20" },
   "scripts": {
     "dev": "vercel dev",
     "test": "vitest run",
@@ -11,12 +11,12 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^3.25.76"
+    "@modelcontextprotocol/sdk": "latest",
+    "zod": "latest"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.4",
-    "vercel": "^44.2.10",
-    "vitest": "^3.2.4"
+    "@vitest/coverage-v8": "latest",
+    "vercel": "latest",
+    "vitest": "latest"
   }
 }
