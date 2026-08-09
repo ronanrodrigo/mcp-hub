@@ -17,8 +17,5 @@
       "src": "^/api/hello-world/hello-world$",
       "dest": "/api/hello-world/hello-world.js"
     }
-  ],
-  "env": {
-    "API_KEY": "@api_key"
-  }
+  ]
 }
