@@ -7,6 +7,10 @@
       "dest": "/api/index.js"
     },
     {
+      "src": "^/api/hello-world/mcp$",
+      "dest": "/api/hello-world/mcp.js"
+    },
+    {
       "src": "^/api/hello-world/hello-world$",
       "dest": "/api/hello-world/hello-world.js"
     }

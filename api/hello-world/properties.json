@@ -1,14 +1,28 @@
 {
   "name": "hello-world",
   "version": "1.0.0",
-  "description": "MCP de teste Hello World",
+  "description": "MCP de teste Hello World implementado com o SDK oficial do Model Context Protocol",
   "author": "ronanrodrigo",
-  "tags": ["test", "demo"],
+  "tags": ["test", "demo", "mcp"],
+  "protocol": "Model Context Protocol",
+  "sdk": "@modelcontextprotocol/sdk",
+  "transport": "Streamable HTTP",
   "endpoints": [
+    {
+      "path": "/api/hello-world/mcp",
+      "method": "POST",
+      "description": "Endpoint MCP Streamable HTTP para descoberta e execução da tool hello_world",
+      "requiresAuth": true,
+      "parameters": [],
+      "response": {
+        "protocol": "JSON-RPC 2.0",
+        "tool": "hello_world"
+      }
+    },
     {
       "path": "/api/hello-world/hello-world",
       "method": "GET",
-      "description": "Endpoint de teste que retorna uma mensagem Hello World",
+      "description": "Endpoint HTTP legado que retorna uma mensagem Hello World",
       "requiresAuth": true,
       "parameters": [],
       "response": {
