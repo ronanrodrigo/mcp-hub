@@ -6,7 +6,7 @@
   "tags": ["test", "demo", "validation"],
   "tools": [
     {
-      "name": "validate",
+      "name": "dia-fruta",
       "description": "Valida que o MCP Hello World está executando, retornando a data atual e uma fruta aleatória."
     }
   ],
