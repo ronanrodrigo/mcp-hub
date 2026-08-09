@@ -1,12 +1,22 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const SKILLS_DIR = () => process.env.SUPERPOWERS_SKILLS_DIR;
-const missing = () => ({ success: false, error: 'SUPERPOWERS_SKILLS_DIR is not configured or does not exist' });
+const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
+export const DEFAULT_SKILLS_DIR = path.resolve(moduleDirectory, '../../skills');
+
+export function resolveSkillsDirectory(env = process.env, fallback = DEFAULT_SKILLS_DIR) {
+  const configured = env.SUPERPOWERS_SKILLS_DIR;
+  return configured || fallback;
+}
+
+const missing = (directory) => ({
+  success: false,
+  error: `Superpowers skills directory is not available: ${directory}`,
+});
 
 async function readSkills() {
-  const dir = SKILLS_DIR();
-  if (!dir) return null;
+  const dir = resolveSkillsDirectory();
   try {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     const skills = [];
@@ -23,7 +33,9 @@ async function readSkills() {
       } catch { /* Ignore directories without a valid SKILL.md. */ }
     }
     return skills.sort((a, b) => a.name.localeCompare(b.name));
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 function words(text) { return new Set(String(text || '').toLowerCase().split(/[^a-z0-9-]+/).filter((word) => word.length > 2)); }
@@ -38,11 +50,11 @@ function rank(skills, query) {
 function error(message) { return { success: false, error: message }; }
 
 export async function listSkills() {
-  const skills = await readSkills(); if (!skills) return missing();
+  const dir = resolveSkillsDirectory(); const skills = await readSkills(); if (!skills) return missing(dir);
   return { success: true, skills: skills.map(({ name, description, files }) => ({ name, description, files })) };
 }
 export async function useSkill({ name, goal = '', enforce_guardrails = false } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   const skill = skills.find((item) => item.name === name); if (!skill) return error(`Skill '${name}' not found`);
   if (enforce_guardrails && /implement|build|code|feature/i.test(goal) && name === 'executing-plans') {
     const names = new Set(skills.map((item) => item.name));
@@ -51,7 +63,7 @@ export async function useSkill({ name, goal = '', enforce_guardrails = false } =
   return { success: true, name: skill.name, content: skill.content };
 }
 export async function getSkillFile({ skill, file } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   const item = skills.find((entry) => entry.name === skill); if (!item) return error(`Skill '${skill}' not found`);
   if (!file || file.includes('/') || file.includes('\\') || file === '..') return error('Invalid skill file name');
   if (!item.files.includes(file)) return error(`File '${file}' not found in skill '${skill}'`);
@@ -59,18 +71,18 @@ export async function getSkillFile({ skill, file } = {}) {
   catch { return error(`Unable to read '${file}' from skill '${skill}'`); }
 }
 export async function recommendSkills({ task, repo_context = '', max_results = 5 } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   return { success: true, recommendations: rank(skills, `${task} ${repo_context}`).slice(0, max_results) };
 }
 export async function composeWorkflow({ goal, max_steps = 6 } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   const ranked = rank(skills, goal).filter((item) => item.score > 0);
   const preferred = ['brainstorming', 'writing-plans', 'test-driven-development', 'verification-before-completion'];
   const ordered = [...preferred.map((name) => ranked.find((item) => item.name === name)).filter(Boolean), ...ranked.filter((item) => !preferred.includes(item.name))];
   return { success: true, goal, workflow: ordered.slice(0, max_steps).map(({ name, description }) => ({ name, description })) };
 }
 export async function validateWorkflow({ goal, selected_skills = [], enforce_order = true } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   const available = new Set(skills.map((skill) => skill.name));
   const unknown = selected_skills.filter((name) => !available.has(name));
   const needsPlanning = /implement|build|feature|develop|code/i.test(goal);
@@ -82,7 +94,7 @@ export async function validateWorkflow({ goal, selected_skills = [], enforce_ord
   return { success: true, valid: violations.length === 0, violations };
 }
 export async function semanticSearchSkills({ query, skill, max_results = 5 } = {}) {
-  const skills = await readSkills(); if (!skills) return missing();
+  const skills = await readSkills(); if (!skills) return missing(resolveSkillsDirectory());
   const selected = skill ? skills.filter((item) => item.name === skill) : skills;
   return { success: true, matches: rank(selected, query).slice(0, max_results).map((item) => ({ ...item, file: 'SKILL.md' })) };
 }
