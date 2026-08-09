@@ -8,9 +8,9 @@
   "tags": ["travel", "flights", "hotels", "transport"],
   "tools": [
     {
-      "name": "travel",
-      "title": "Travel Search",
-      "description": "Search and plan travel using the configured trvl MCP service. Supports natural-language travel requests and structured trip searches.",
+      "name": "plan_natural",
+      "title": "Natural Language Travel Planner",
+      "description": "Turn a free-form travel request into a structured routing plan and the searches to dispatch.",
       "inputSchema": {
         "type": "object",
         "properties": {

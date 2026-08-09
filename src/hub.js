@@ -1,33 +1,7 @@
 import { discovery } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
 import { superpowersHandlers } from './tools/superpowers.js';
-import { travel } from './tools/trvl.js';
+import { planNatural } from './tools/trvl.js';
 import { createMcpServer, listHubTools } from './mcp-server.js';
-
-const toolHandlers = {
-  'hello-world/dia-fruta': diaFruta,
-  'superpowers/list_skills': superpowersHandlers.listSkills,
-  'superpowers/use_skill': superpowersHandlers.useSkill,
-  'superpowers/get_skill_file': superpowersHandlers.getSkillFile,
-  'superpowers/recommend_skills': superpowersHandlers.recommendSkills,
-  'superpowers/compose_workflow': superpowersHandlers.composeWorkflow,
-  'superpowers/validate_workflow': superpowersHandlers.validateWorkflow,
-  'superpowers/semantic_search_skills': superpowersHandlers.semanticSearchSkills,
-  'trvl/travel': travel,
-};
-
-export async function createHub() {
-  return {
-    server: await createMcpServer(),
-    async callTool(name, args = {}) {
-      if (name === 'discovery') return discovery(args);
-      const handler = toolHandlers[name];
-      if (!handler) {
-        const knownTools = (await listHubTools()).map((tool) => tool.name);
-        if (!knownTools.includes(name)) throw new Error(`Unknown tool: ${name}`);
-        throw new Error(`Missing local adapter for ${name}`);
-      }
-      return handler(args);
-    },
-  };
-}
+const toolHandlers = { 'hello-world/dia-fruta': diaFruta, 'superpowers/list_skills': superpowersHandlers.listSkills, 'superpowers/use_skill': superpowersHandlers.useSkill, 'superpowers/get_skill_file': superpowersHandlers.getSkillFile, 'superpowers/recommend_skills': superpowersHandlers.recommendSkills, 'superpowers/compose_workflow': superpowersHandlers.composeWorkflow, 'superpowers/validate_workflow': superpowersHandlers.validateWorkflow, 'superpowers/semantic_search_skills': superpowersHandlers.semanticSearchSkills, 'trvl/plan_natural': planNatural };
+export async function createHub() { return { server: await createMcpServer(), async callTool(name, args = {}) { if (name === 'discovery') return discovery(args); const handler = toolHandlers[name]; if (!handler) { const knownTools = (await listHubTools()).map((tool) => tool.name); if (!knownTools.includes(name)) throw new Error(`Unknown tool: ${name}`); throw new Error(`Missing local adapter for ${name}`); } return handler(args); } }; }

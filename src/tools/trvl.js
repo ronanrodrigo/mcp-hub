@@ -5,22 +5,16 @@ const REMOTE_URL_ENV = 'TRVL_MCP_URL';
 
 function getRemoteUrl() {
   const value = process.env[REMOTE_URL_ENV];
-  if (!value) {
-    throw new Error(`${REMOTE_URL_ENV} must be configured to use the trvl adapter`);
-  }
+  if (!value) throw new Error(`${REMOTE_URL_ENV} must be configured to use the trvl adapter`);
   let url;
-  try {
-    url = new URL(value);
-  } catch {
-    throw new Error(`${REMOTE_URL_ENV} must be a valid URL`);
-  }
+  try { url = new URL(value); } catch { throw new Error(`${REMOTE_URL_ENV} must be a valid URL`); }
   if (!['http:', 'https:'].includes(url.protocol)) {
     throw new Error(`${REMOTE_URL_ENV} must use HTTP or HTTPS`);
   }
   return url;
 }
 
-export async function travel(args = {}) {
+export async function planNatural(args = {}) {
   const query = typeof args.query === 'string' ? args.query.trim() : '';
   if (!query) throw new Error('query is required');
 
@@ -28,10 +22,8 @@ export async function travel(args = {}) {
   const transport = new StreamableHTTPClientTransport(getRemoteUrl());
   try {
     await client.connect(transport);
-    const result = await client.callTool({ name: 'travel', arguments: { query } });
-    if (!result || !Array.isArray(result.content)) {
-      throw new Error('trvl returned an invalid MCP response');
-    }
+    const result = await client.callTool({ name: 'plan_natural', arguments: { query } });
+    if (!result || !Array.isArray(result.content)) throw new Error('trvl returned an invalid MCP response');
     return result;
   } catch (error) {
     throw new Error(`trvl request failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -41,15 +33,13 @@ export async function travel(args = {}) {
   }
 }
 
-export const travelTool = {
-  name: 'travel',
-  title: 'Travel Search',
-  description: 'Search and plan travel through the configured trvl MCP service.',
+export const planNaturalTool = {
+  name: 'plan_natural',
+  title: 'Natural Language Travel Planner',
+  description: 'Turn a free-form travel request into a structured routing plan.',
   inputSchema: {
     type: 'object',
-    properties: {
-      query: { type: 'string', description: 'Natural-language travel request.' },
-    },
+    properties: { query: { type: 'string', description: 'Natural-language travel request.' } },
     required: ['query'],
   },
 };
