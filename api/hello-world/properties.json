@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "MCP de teste Hello World",
   "author": "ronanrodrigo",
-  "tags": ["test", "demo"],
+  "tags": ["test", "demo", "validation"],
+  "tools": [
+    {
+      "name": "validate",
+      "description": "Valida que o MCP Hello World está executando, retornando a data atual e uma fruta aleatória."
+    }
+  ],
   "endpoints": [{
     "path": "/api/hello-world/hello-world",
     "method": "GET",
