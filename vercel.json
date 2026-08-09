@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/hello-world/hello-world.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "^/api/hello-world/hello-world$",
+      "dest": "/api/hello-world/hello-world.js"
+    }
+  ],
+  "env": {
+    "API_KEY": "@api_key"
+  }
+}
