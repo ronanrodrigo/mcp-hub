@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { discovery, discoveryTool } from './tools/discovery.js';
-import { validate, validateTool } from './tools/validate.js';
+import { diaFruta, diaFrutaTool } from './tools/dia-fruta.js';
 
 function registerJsonTool(server, tool, handler) {
   server.registerTool(tool.name, {
@@ -19,10 +19,10 @@ function registerJsonTool(server, tool, handler) {
 export function createMcpServer() {
   const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
   registerJsonTool(server, discoveryTool, discovery);
-  registerJsonTool(server, validateTool, validate);
+  registerJsonTool(server, diaFrutaTool, diaFruta);
   return server;
 }
 
 export function listHubTools() {
-  return [discoveryTool, validateTool];
+  return [discoveryTool, diaFrutaTool];
 }

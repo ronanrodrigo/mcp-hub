@@ -3,10 +3,10 @@ import { createMcpServer, listHubTools } from '../src/mcp-server.js';
 import { createHub } from '../src/hub.js';
 
 describe('MCP hub server', () => {
-  it('initializes with the official SDK and exposes discovery and validate', () => {
+  it('initializes with the official SDK and exposes discovery and dia-fruta', () => {
     const server = createMcpServer();
     expect(server).toBeDefined();
-    expect(listHubTools().map((tool) => tool.name)).toEqual(['discovery', 'validate']);
+    expect(listHubTools().map((tool) => tool.name)).toEqual(['discovery', 'dia-fruta']);
   });
   it('provides a future-proof tool dispatch boundary', async () => {
     const result = await createHub().callTool('discovery');
