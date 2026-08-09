@@ -1,10 +1,18 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta, diaFrutaTool } from './tools/dia-fruta.js';
+import { superpowersHandlers } from './tools/superpowers.js';
 import { loadAllMCPs } from './mcps-loader.js';
 
 const localToolHandlers = {
   'hello-world/dia-fruta': diaFruta,
+  'superpowers/list_skills': superpowersHandlers.listSkills,
+  'superpowers/use_skill': superpowersHandlers.useSkill,
+  'superpowers/get_skill_file': superpowersHandlers.getSkillFile,
+  'superpowers/recommend_skills': superpowersHandlers.recommendSkills,
+  'superpowers/compose_workflow': superpowersHandlers.composeWorkflow,
+  'superpowers/validate_workflow': superpowersHandlers.validateWorkflow,
+  'superpowers/semantic_search_skills': superpowersHandlers.semanticSearchSkills,
 };
 
 function registerJsonTool(server, tool, handler) {
@@ -17,6 +25,7 @@ function registerJsonTool(server, tool, handler) {
     return {
       content: [{ type: 'text', text: JSON.stringify(result) }],
       structuredContent: result,
+      ...(result?.success === false ? { isError: true } : {}),
     };
   });
 }
@@ -40,11 +49,8 @@ export async function createMcpServer() {
     for (const metadataTool of mcp.tools || []) {
       const tool = metadataToolToDefinition(mcp, metadataTool);
       const handler = localToolHandlers[tool.name];
-
-      registerJsonTool(server, tool, handler || (async () => ({
-        success: false,
-        error: `Tool ${tool.name} is registered in properties.json but has no local adapter yet`,
-      })));
+      if (!handler) throw new Error(`Missing local adapter for ${tool.name}`);
+      registerJsonTool(server, tool, handler);
     }
   }
 
