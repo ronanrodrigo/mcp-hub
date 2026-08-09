@@ -23,6 +23,17 @@ A tool interna do Hub continua sendo `discovery`.
 * `superpowers/compose_workflow`: compõe um workflow ordenado.
 * `superpowers/validate_workflow`: valida skills selecionadas e guardrails.
 * `superpowers/semantic_search_skills`: pesquisa o conteúdo das skills.
+* `trvl/travel`: encaminha uma solicitação de viagem para uma instância trvl via MCP Streamable HTTP.
+
+## trvl
+
+A integração usa o SDK oficial do MCP (`Client` e `StreamableHTTPClientTransport`) e não executa o binário Go via `stdio` na Vercel. Configure a URL de uma instância trvl que exponha Streamable HTTP:
+
+```bash
+TRVL_MCP_URL=https://seu-endpoint-trvl.example/mcp
+```
+
+A URL é validada e a tool retorna erro explícito se a variável não estiver configurada, se a URL for inválida ou se a resposta remota não seguir o formato MCP. A origem `MikkoParkkola/trvl` publica oficialmente pacotes `stdio`; portanto, o Hub não tenta transformar `stdio` em HTTP nem inclui uma credencial ou endpoint inventado. A capacidade fica disponível para um deployment remoto compatível quando `TRVL_MCP_URL` for configurada.
 
 ## Superpowers
 

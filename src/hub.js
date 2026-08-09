@@ -1,6 +1,7 @@
 import { discovery } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
 import { superpowersHandlers } from './tools/superpowers.js';
+import { travel } from './tools/trvl.js';
 import { createMcpServer, listHubTools } from './mcp-server.js';
 
 const toolHandlers = {
@@ -12,6 +13,7 @@ const toolHandlers = {
   'superpowers/compose_workflow': superpowersHandlers.composeWorkflow,
   'superpowers/validate_workflow': superpowersHandlers.validateWorkflow,
   'superpowers/semantic_search_skills': superpowersHandlers.semanticSearchSkills,
+  'trvl/travel': travel,
 };
 
 export async function createHub() {

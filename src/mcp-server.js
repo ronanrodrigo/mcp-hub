@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta, diaFrutaTool } from './tools/dia-fruta.js';
 import { superpowersHandlers } from './tools/superpowers.js';
+import { travel } from './tools/trvl.js';
 import { loadAllMCPs } from './mcps-loader.js';
 
 const localToolHandlers = {
@@ -14,6 +15,7 @@ const localToolHandlers = {
   'superpowers/compose_workflow': superpowersHandlers.composeWorkflow,
   'superpowers/validate_workflow': superpowersHandlers.validateWorkflow,
   'superpowers/semantic_search_skills': superpowersHandlers.semanticSearchSkills,
+  'trvl/travel': travel,
 };
 
 function jsonSchemaToZodShape(schema = {}) {
