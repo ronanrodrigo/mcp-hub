@@ -1,0 +1,27 @@
+{
+  "name": "trvl",
+  "version": "1.21.0",
+  "description": "Real travel search MCP for flights, hotels, ground transport, and trip planning.",
+  "author": "MikkoParkkola",
+  "source": "https://github.com/MikkoParkkola/trvl",
+  "transport": "streamable-http",
+  "tags": ["travel", "flights", "hotels", "transport"],
+  "tools": [
+    {
+      "name": "travel",
+      "title": "Travel Search",
+      "description": "Search and plan travel using the configured trvl MCP service. Supports natural-language travel requests and structured trip searches.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural-language travel request, such as finding flights and hotels for a trip."
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  ],
+  "endpoints": []
+}
