@@ -10,7 +10,7 @@ MCP Hub privado, em JavaScript, pronto para Vercel. O serviço central registra 
 * `api/start.js` expõe o resultado da execução da tool via HTTP `GET` ou `POST /start`.
 * Cada MCP pode ter seu próprio handler HTTP e metadata estático.
 
-> O nome atual do pacote npm do SDK oficial é `@modelcontextprotocol/sdk`; o repositório upstream é `modelcontextprotocol/typescript-sdk`.
+> O nome do pacote npm do SDK oficial é `@modelcontextprotocol/sdk`; o repositório upstream é `modelcontextprotocol/typescript-sdk`.
 
 ## Uso local
 
@@ -20,6 +20,8 @@ cp .env.example .env
 npm test
 npm run dev
 ```
+
+O script `dev` usa `npx vercel@latest`, portanto o CLI da Vercel não é instalado como dependência do projeto nem incluído no bundle de produção.
 
 A chave padrão é `fixed-secret-key`. Em produção, configure `API_KEY` na Vercel. Envie-a no header `x-api-key`.
 
@@ -41,4 +43,6 @@ A tool `discovery` encontrará o novo MCP automaticamente, sem registro manual.
 
 ## Deploy
 
-Importe o repositório na Vercel, configure `API_KEY` nas Environment Variables e faça o deploy. O workflow `.github/workflows/tests.yml` executa `npm ci` e todos os testes em cada pull request.
+O projeto fixa o runtime de build e funções no Node.js `24.x`, evitando upgrades automáticos de major do Node.js na Vercel. Importe o repositório na Vercel, configure `API_KEY` nas Environment Variables e faça o deploy.
+
+O workflow `.github/workflows/tests.yml` executa os testes em cada pull request.
