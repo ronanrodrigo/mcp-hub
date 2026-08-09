@@ -1,12 +1,26 @@
 import { discovery } from './tools/discovery.js';
-import { createMcpServer } from './mcp-server.js';
+import { diaFruta } from './tools/dia-fruta.js';
+import { createMcpServer, listHubTools } from './mcp-server.js';
 
-export function createHub() {
+const toolHandlers = {
+  'hello-world/dia-fruta': diaFruta,
+};
+
+export async function createHub() {
   return {
-    server: createMcpServer(),
+    server: await createMcpServer(),
     async callTool(name, args = {}) {
-      if (name !== 'discovery') throw new Error(`Unknown tool: ${name}`);
-      return discovery(args);
+      if (name === 'discovery') return discovery(args);
+      const handler = toolHandlers[name];
+      if (!handler) {
+        const knownTools = (await listHubTools()).map((tool) => tool.name);
+        if (!knownTools.includes(name)) throw new Error(`Unknown tool: ${name}`);
+        return {
+          success: false,
+          error: `Tool ${name} is registered but has no local adapter yet`,
+        };
+      }
+      return handler(args);
     },
   };
 }

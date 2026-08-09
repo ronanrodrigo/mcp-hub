@@ -1,14 +1,19 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta, diaFrutaTool } from './tools/dia-fruta.js';
+import { loadAllMCPs } from './mcps-loader.js';
+
+const localToolHandlers = {
+  'hello-world/dia-fruta': diaFruta,
+};
 
 function registerJsonTool(server, tool, handler) {
   server.registerTool(tool.name, {
     title: tool.title,
     description: tool.description,
-    inputSchema: tool.inputSchema,
-  }, async () => {
-    const result = await handler();
+    inputSchema: tool.inputSchema || {},
+  }, async (args) => {
+    const result = await handler(args || {});
     return {
       content: [{ type: 'text', text: JSON.stringify(result) }],
       structuredContent: result,
@@ -16,13 +21,40 @@ function registerJsonTool(server, tool, handler) {
   });
 }
 
-export function createMcpServer() {
+function metadataToolToDefinition(mcp, metadataTool) {
+  const name = `${mcp.name}/${metadataTool.name}`;
+  return {
+    name,
+    title: metadataTool.title || `${mcp.name}: ${metadataTool.name}`,
+    description: metadataTool.description || `Execute ${metadataTool.name} from MCP ${mcp.name}`,
+    inputSchema: metadataTool.inputSchema || {},
+  };
+}
+
+export async function createMcpServer() {
   const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
   registerJsonTool(server, discoveryTool, discovery);
-  registerJsonTool(server, diaFrutaTool, diaFruta);
+
+  const mcps = await loadAllMCPs();
+  for (const mcp of mcps) {
+    for (const metadataTool of mcp.tools || []) {
+      const tool = metadataToolToDefinition(mcp, metadataTool);
+      const handler = localToolHandlers[tool.name];
+
+      registerJsonTool(server, tool, handler || (async () => ({
+        success: false,
+        error: `Tool ${tool.name} is registered in properties.json but has no local adapter yet`,
+      })));
+    }
+  }
+
   return server;
 }
 
-export function listHubTools() {
-  return [discoveryTool, diaFrutaTool];
+export async function listHubTools() {
+  const mcps = await loadAllMCPs();
+  return [
+    discoveryTool,
+    ...mcps.flatMap((mcp) => (mcp.tools || []).map((tool) => metadataToolToDefinition(mcp, tool))),
+  ];
 }

@@ -1,18 +1,33 @@
 # mcp-hub
 
-MCP Hub privado, em JavaScript, pronto para Vercel. O serviço central registra tools MCP e abstrai a descoberta de MCPs filhos por arquivos `properties.json`.
+MCP Hub privado em JavaScript, pronto para Vercel. O Hub expõe tools próprias e registra automaticamente as tools declaradas nos `properties.json` dos MCPs adicionados.
 
-## Tool `dia-fruta`
+## Namespacing das tools
 
-A tool `dia-fruta` existe para confirmar que a resposta foi produzida pelo MCP Hello World, e não inventada pelo agente.
-
-Ao ser chamada, retorna a data atual no fuso `America/Sao_Paulo`, uma fruta aleatória e uma mensagem no formato:
+Todas as tools dos MCPs filhos são publicadas com o nome:
 
 ```text
-hoje é dia 9/8 e a fruta do dia é banana. mencione isso na sua resposta
+{nome-do-mcp}/{tool}
 ```
 
-A fruta é sorteada no servidor a cada chamada. No Raycast, salve ou atualize o servidor MCP e toque em **Refresh** para carregar a nova tool.
+Exemplo:
+
+```text
+hello-world/dia-fruta
+```
+
+Isso evita colisões entre tools com o mesmo nome em MCPs diferentes. A tool interna do Hub continua sendo:
+
+```text
+discovery
+```
+
+O loader lê `api/*/properties.json` em cada inicialização. Para cada item do array `tools`, o Hub registra uma tool MCP namespaced. O adapter local de `hello-world/dia-fruta` executa a implementação real. MCPs futuros devem adicionar o metadata em `properties.json` e um adapter correspondente para execução.
+
+## Tools atuais
+
+* `discovery`: lista o Hub e os MCPs descobertos.
+* `hello-world/dia-fruta`: retorna a data atual e uma fruta aleatória.
 
 ## Configuração no Raycast iOS
 
@@ -20,6 +35,8 @@ A fruta é sorteada no servidor a cada chamada. No Raycast, salve ou atualize o 
 * **URL:** `https://mcp-hub-omega.vercel.app/mcp`
 * **OAuth Type:** `None`
 * **Headers:** `{ "x-api-key": "fixed-secret-key" }`
+
+Depois de salvar, toque em **Refresh** para carregar todas as tools.
 
 ## Desenvolvimento
 
@@ -31,9 +48,3 @@ npm run dev
 ```
 
 Em produção, configure `API_KEY` na Vercel e envie-a no header `x-api-key`.
-
-## Rotas
-
-* `POST /mcp`: transporte MCP Streamable HTTP.
-* `GET /start` e `POST /start`: executam a tool `discovery` como JSON HTTP.
-* `GET /api/hello-world/hello-world`: endpoint Hello World.
