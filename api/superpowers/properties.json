@@ -1,0 +1,107 @@
+{
+  "name": "superpowers",
+  "version": "0.1.0",
+  "description": "Expose the Superpowers skills library through the MCP Hub.",
+  "author": "erophames",
+  "source": "https://github.com/erophames/superpowers-mcp",
+  "license": "MIT",
+  "transport": "streamable-http",
+  "tags": ["skills", "workflows", "coding-agents", "tdd"],
+  "tools": [
+    {
+      "name": "list_skills",
+      "title": "List Superpowers skills",
+      "description": "List available Superpowers skills and their supporting files.",
+      "inputSchema": { "type": "object", "properties": {}, "additionalProperties": false }
+    },
+    {
+      "name": "use_skill",
+      "title": "Use a Superpowers skill",
+      "description": "Load the complete instructions for a skill by directory name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Skill directory name." },
+          "goal": { "type": "string", "description": "Optional task goal used by guardrails." },
+          "enforce_guardrails": { "type": "boolean", "description": "Require prerequisite workflow skills when applicable." }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_skill_file",
+      "title": "Get a Superpowers skill file",
+      "description": "Load a supporting file belonging to a skill.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "skill": { "type": "string" },
+          "file": { "type": "string" }
+        },
+        "required": ["skill", "file"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend_skills",
+      "title": "Recommend Superpowers skills",
+      "description": "Recommend relevant skills for a task using simple content ranking.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": { "type": "string" },
+          "repo_context": { "type": "string" },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 10 }
+        },
+        "required": ["task"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compose_workflow",
+      "title": "Compose a Superpowers workflow",
+      "description": "Build an ordered workflow of relevant skills for a goal.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": { "type": "string" },
+          "max_steps": { "type": "integer", "minimum": 1, "maximum": 12 }
+        },
+        "required": ["goal"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "validate_workflow",
+      "title": "Validate a Superpowers workflow",
+      "description": "Check selected skills against basic workflow guardrails.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": { "type": "string" },
+          "selected_skills": { "type": "array", "items": { "type": "string" } },
+          "enforce_order": { "type": "boolean" }
+        },
+        "required": ["goal", "selected_skills"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "semantic_search_skills",
+      "title": "Search Superpowers skills",
+      "description": "Search skill instructions and supporting Markdown files by text relevance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "skill": { "type": "string" },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 20 }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "endpoints": []
+}
