@@ -1,6 +1,7 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/mcp", "destination": "/api/mcp" },
     { "source": "/start", "destination": "/api/start" },
     { "source": "/api/hello-world/hello-world", "destination": "/api/hello-world/hello-world.js" }
   ]
