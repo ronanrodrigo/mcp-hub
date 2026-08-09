@@ -22,12 +22,15 @@ Isso evita colisões entre tools com o mesmo nome em MCPs diferentes. A tool int
 discovery
 ```
 
-O loader lê `api/*/properties.json` em cada inicialização. Para cada item do array `tools`, o Hub registra uma tool MCP namespaced. O adapter local de `hello-world/dia-fruta` executa a implementação real. MCPs futuros devem adicionar o metadata em `properties.json` e um adapter correspondente para execução.
+O loader lê `api/*/properties.json` em cada inicialização. Para cada item do array `tools`, o Hub registra uma tool MCP namespaced e executa o adapter correspondente.
 
 ## Tools atuais
 
 * `discovery`: lista o Hub e os MCPs descobertos.
 * `hello-world/dia-fruta`: retorna a data atual e uma fruta aleatória.
+* `world-monitor/*`: encaminha as tools de inteligência do World Monitor por Streamable HTTP para `https://worldmonitor.app/mcp`.
+
+A integração World Monitor usa `WORLD_MONITOR_MCP_URL` opcionalmente para substituir o endpoint padrão e `WORLD_MONITOR_API_KEY` opcionalmente para enviar o header `X-WorldMonitor-Key`. Chamadas remotas sem resposta válida ou com falha retornam `success: false`.
 
 ## Configuração no Raycast iOS
 

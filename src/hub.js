@@ -1,9 +1,22 @@
 import { discovery } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
+import { callWorldMonitor } from './tools/world-monitor.js';
 import { createMcpServer, listHubTools } from './mcp-server.js';
 
 const toolHandlers = {
   'hello-world/dia-fruta': diaFruta,
+  ...Object.fromEntries([
+    'get_country_risk',
+    'get_world_brief',
+    'get_country_brief',
+    'get_market_data',
+    'get_chokepoint_status',
+    'get_news_intelligence',
+    'get_conflict_events',
+    'get_natural_disasters',
+    'get_prediction_markets',
+    'get_forecast_predictions',
+  ].map((name) => [`world-monitor/${name}`, (args) => callWorldMonitor(name, args)])),
 };
 
 export async function createHub() {
