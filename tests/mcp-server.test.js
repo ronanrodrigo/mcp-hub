@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { createMcpServer, listHubTools } from '../src/mcp-server.js';
+import { createMcpServer, jsonSchemaToZodShape, listHubTools, toMcpToolName } from '../src/mcp-server.js';
 import { createHub } from '../src/hub.js';
 
 describe('MCP hub server', () => {
-  it('initializes with the official SDK and exposes namespaced tools', async () => {
+  it('initializes with SDK-compatible schemas and names', async () => {
     const server = await createMcpServer();
     expect(server).toBeDefined();
-    expect((await listHubTools()).map((tool) => tool.name)).toEqual(['discovery', 'hello-world/dia-fruta']);
+    expect(toMcpToolName('superpowers/list_skills')).toBe('superpowers.list_skills');
+    expect((await listHubTools()).map((tool) => tool.name)).toContain('superpowers/list_skills');
+    expect(jsonSchemaToZodShape({
+      type: 'object',
+      properties: { name: { type: 'string' } },
+      required: ['name'],
+    }).name.safeParse('brainstorming').success).toBe(true);
   });
 
   it('executes a namespaced child MCP tool', async () => {
