@@ -1,0 +1,55 @@
+{
+  "name": "notes-search",
+  "version": "1.0.0",
+  "description": "Pesquisa inteligente nas notas técnicas e tags publicadas em ronanrodrigo.dev.",
+  "author": "Ronan Rodrigo",
+  "source": "https://ronanrodrigo.dev/notes/agent/",
+  "transport": "streamable-http",
+  "tags": ["notes", "ai", "search", "fuzzy-search", "knowledge-base"],
+  "tools": [
+    {
+      "name": "search_notes",
+      "title": "Search notes",
+      "description": "Search the published notes using exact, partial, token and fuzzy matching across title, slug, description, tags and metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Terms or phrase to search for." },
+          "tag": { "type": "string", "description": "Optional exact or fuzzy tag filter." },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 50, "description": "Maximum number of results." }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_tags",
+      "title": "Search note tags",
+      "description": "Search the published tag index with exact, partial and fuzzy matching.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Tag or topic to search for." },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 50, "description": "Maximum number of results." }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_tags",
+      "title": "List note tags",
+      "description": "List all published tags, optionally ranked by an intelligent fuzzy query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Optional topic or tag query used for fuzzy ranking." },
+          "max_results": { "type": "integer", "minimum": 1, "maximum": 200, "description": "Maximum number of tags." }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "endpoints": []
+}
