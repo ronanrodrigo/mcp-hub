@@ -16,6 +16,9 @@ A tool interna do Hub continua sendo `discovery`.
 
 * `discovery`: lista o Hub e os MCPs descobertos.
 * `hello-world/dia-fruta`: retorna a data atual e uma fruta aleatória.
+* `notes-search/search_notes`: pesquisa notas técnicas com correspondência exata, parcial, por tokens e fuzzy search.
+* `notes-search/search_tags`: pesquisa tags com correspondência exata, parcial e fuzzy search.
+* `notes-search/list_tags`: lista ou ranqueia as tags disponíveis.
 * `superpowers/list_skills`: lista as skills disponíveis.
 * `superpowers/use_skill`: carrega o conteúdo de uma skill.
 * `superpowers/get_skill_file`: carrega um arquivo de apoio de uma skill.
@@ -23,6 +26,16 @@ A tool interna do Hub continua sendo `discovery`.
 * `superpowers/compose_workflow`: compõe um workflow ordenado.
 * `superpowers/validate_workflow`: valida skills selecionadas e guardrails.
 * `superpowers/semantic_search_skills`: pesquisa o conteúdo das skills.
+
+## Notes Search
+
+A integração `notes-search` consome somente os índices públicos e somente leitura de `ronanrodrigo.dev`:
+
+* `https://ronanrodrigo.dev/notes/index.json`: notas, slugs, caminhos, datas, descrições e tags.
+* `https://ronanrodrigo.dev/notes/list-tags.json`: índice de tags e URLs.
+* `https://ronanrodrigo.dev/notes/agent/`: contexto e orientações de uso da base.
+
+A busca normaliza acentos e combina correspondência de frase, tokens, substrings e distância de edição. Os resultados incluem uma pontuação de relevância. A integração não altera o conteúdo, não executa código remoto e não aceita URLs arbitrárias.
 
 ## Superpowers
 
