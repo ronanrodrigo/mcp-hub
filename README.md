@@ -16,19 +16,6 @@ A tool interna do Hub continua sendo `discovery`.
 
 * `discovery`: lista o Hub e os MCPs descobertos.
 * `hello-world/dia-fruta`: retorna a data atual e uma fruta aleatória.
-* `superpowers/list_skills`: lista as skills disponíveis.
-* `superpowers/use_skill`: carrega o conteúdo de uma skill.
-* `superpowers/get_skill_file`: carrega um arquivo de apoio de uma skill.
-* `superpowers/recommend_skills`: recomenda skills para uma tarefa.
-* `superpowers/compose_workflow`: compõe um workflow ordenado.
-* `superpowers/validate_workflow`: valida skills selecionadas e guardrails.
-* `superpowers/semantic_search_skills`: pesquisa o conteúdo das skills.
-
-## Superpowers
-
-A integração foi baseada no MCP `superpowers-mcp` de [erophames](https://github.com/erophames/superpowers-mcp), listado em [MCP Market](https://mcpmarket.com/server/superpowers). A origem declara licença MIT e disponibiliza as skills por filesystem local; prompts e resources da origem não são publicados pelo Hub nesta primeira integração.
-
-O adapter do Hub lê diretórios de skills no formato `SKILL.md` e arquivos de apoio. Para cada skill, o diretório deve estar dentro de `SUPERPOWERS_SKILLS_DIR`.
 
 ## Configuração no Raycast iOS
 
@@ -49,4 +36,4 @@ npm run test:coverage
 npm run dev
 ```
 
-Em produção, configure `API_KEY` na Vercel e envie-a no header `x-api-key`. Para habilitar as tools Superpowers, configure também `SUPERPOWERS_SKILLS_DIR` apontando para um diretório de skills disponível no filesystem do deployment. A Vercel não oferece filesystem persistente para clonar ou atualizar skills em runtime; portanto, o diretório precisa ser incluído no projeto/deployment ou fornecido por um serviço externo em uma evolução futura.
+Em produção, configure `API_KEY` na Vercel e envie-a no header `x-api-key`.
