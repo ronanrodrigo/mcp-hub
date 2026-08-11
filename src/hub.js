@@ -1,9 +1,13 @@
 import { discovery } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
+import { notesSearchHandlers } from './tools/notes-search.js';
 import { createMcpServer, listHubTools } from './mcp-server.js';
 
 const toolHandlers = {
   'hello-world/dia-fruta': diaFruta,
+  'notes-search/search_notes': notesSearchHandlers.searchNotes,
+  'notes-search/search_tags': notesSearchHandlers.searchTags,
+  'notes-search/list_tags': notesSearchHandlers.listTags,
 };
 
 export async function createHub() {

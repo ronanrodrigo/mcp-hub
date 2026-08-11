@@ -2,10 +2,14 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
+import { notesSearchHandlers } from './tools/notes-search.js';
 import { loadAllMCPs } from './mcps-loader.js';
 
 const localToolHandlers = {
   'hello-world/dia-fruta': diaFruta,
+  'notes-search/search_notes': notesSearchHandlers.searchNotes,
+  'notes-search/search_tags': notesSearchHandlers.searchTags,
+  'notes-search/list_tags': notesSearchHandlers.listTags,
 };
 
 function jsonSchemaToZodShape(schema = {}) {
@@ -39,40 +43,23 @@ function jsonSchemaToZodType(schema = {}) {
   return z.unknown();
 }
 
-function toMcpToolName(name) {
-  return name.replaceAll('/', '.');
-}
+function toMcpToolName(name) { return name.replaceAll('/', '.'); }
 
 function registerJsonTool(server, tool, handler) {
-  server.registerTool(toMcpToolName(tool.name), {
-    title: tool.title,
-    description: tool.description,
-    inputSchema: jsonSchemaToZodShape(tool.inputSchema),
-  }, async (args) => {
+  server.registerTool(toMcpToolName(tool.name), { title: tool.title, description: tool.description, inputSchema: jsonSchemaToZodShape(tool.inputSchema) }, async (args) => {
     const result = await handler(args || {});
-    return {
-      content: [{ type: 'text', text: JSON.stringify(result) }],
-      structuredContent: result,
-      ...(result?.success === false ? { isError: true } : {}),
-    };
+    return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, ...(result?.success === false ? { isError: true } : {}) };
   });
 }
 
 function metadataToolToDefinition(mcp, metadataTool) {
   const name = `${mcp.name}/${metadataTool.name}`;
-  return {
-    name,
-    mcpName: toMcpToolName(name),
-    title: metadataTool.title || `${mcp.name}: ${metadataTool.name}`,
-    description: metadataTool.description || `Execute ${metadataTool.name} from MCP ${mcp.name}`,
-    inputSchema: metadataTool.inputSchema || {},
-  };
+  return { name, mcpName: toMcpToolName(name), title: metadataTool.title || `${mcp.name}: ${metadataTool.name}`, description: metadataTool.description || `Execute ${metadataTool.name} from MCP ${mcp.name}`, inputSchema: metadataTool.inputSchema || {} };
 }
 
 export async function createMcpServer() {
   const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
   registerJsonTool(server, discoveryTool, discovery);
-
   const mcps = await loadAllMCPs();
   for (const mcp of mcps) {
     for (const metadataTool of mcp.tools || []) {
@@ -82,16 +69,12 @@ export async function createMcpServer() {
       registerJsonTool(server, tool, handler);
     }
   }
-
   return server;
 }
 
 export async function listHubTools() {
   const mcps = await loadAllMCPs();
-  return [
-    discoveryTool,
-    ...mcps.flatMap((mcp) => (mcp.tools || []).map((tool) => metadataToolToDefinition(mcp, tool))),
-  ];
+  return [discoveryTool, ...mcps.flatMap((mcp) => (mcp.tools || []).map((tool) => metadataToolToDefinition(mcp, tool)))];
 }
 
 export { jsonSchemaToZodShape, toMcpToolName };

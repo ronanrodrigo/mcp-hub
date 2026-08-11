@@ -4,18 +4,25 @@ MCP Hub privado em JavaScript, pronto para Vercel. O Hub expõe tools próprias 
 
 ## Namespacing das tools
 
-Todas as tools dos MCPs filhos são publicadas com o nome:
-
-```text
-{nome-do-mcp}/{tool}
-```
-
-A tool interna do Hub continua sendo `discovery`.
+Todas as tools dos MCPs filhos são publicadas com o nome `{nome-do-mcp}/{tool}`. A tool interna do Hub continua sendo `discovery`.
 
 ## Tools atuais
 
 * `discovery`: lista o Hub e os MCPs descobertos.
 * `hello-world/dia-fruta`: retorna a data atual e uma fruta aleatória.
+* `notes-search/search_notes`: pesquisa notas técnicas com correspondência exata, parcial, por tokens e fuzzy search.
+* `notes-search/search_tags`: pesquisa tags com correspondência exata, parcial e fuzzy search.
+* `notes-search/list_tags`: lista ou ranqueia as tags disponíveis.
+
+## Notes Search
+
+A integração `notes-search` consome somente os índices públicos de `ronanrodrigo.dev`:
+
+* `https://ronanrodrigo.dev/notes/index.json`
+* `https://ronanrodrigo.dev/notes/list-tags.json`
+* `https://ronanrodrigo.dev/notes/agent/`
+
+A busca normaliza acentos e combina correspondência de frase, tokens, substrings e distância de edição. A integração é somente leitura, não aceita URLs arbitrárias e não executa código remoto.
 
 ## Configuração no Raycast iOS
 
@@ -23,8 +30,6 @@ A tool interna do Hub continua sendo `discovery`.
 * **URL:** `https://mcp-hub-omega.vercel.app/mcp`
 * **OAuth Type:** `None`
 * **Headers:** `{ "x-api-key": "fixed-secret-key" }`
-
-Depois de salvar, toque em **Refresh** para carregar todas as tools.
 
 ## Desenvolvimento
 
