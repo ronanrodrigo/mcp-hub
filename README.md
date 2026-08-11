@@ -22,7 +22,7 @@ A tool interna do Hub continua sendo `discovery`.
 
 ## Notes Search
 
-A integração `notes-search` consome somente os índices públicos e somente leitura de `ronanrodrigo.dev:
+A integração `notes-search` consome somente os índices públicos e somente leitura de `ronanrodrigo.dev`:
 
 * `https://ronanrodrigo.dev/notes/index.json`: notas, slugs, caminhos, datas, descrições e tags.
 * `https://ronanrodrigo.dev/notes/list-tags.json`: índice de tags e URLs.
