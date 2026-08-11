@@ -7,7 +7,10 @@ const notes = [
 ];
 const tags = [{ name: 'agent-memory', url: '/notes/tags/agent-memory/' }, { name: 'web-scraping', url: '/notes/tags/web-scraping/' }];
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
 
 describe('Notes search tools', () => {
   it('normalizes accents and computes edit distance', () => {

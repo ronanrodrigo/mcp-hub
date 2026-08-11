@@ -39,7 +39,7 @@ function score(item, query) {
   for (const token of tokens(queryText)) {
     if (haystack.includes(token)) result += 4;
     const best = candidates.reduce((highest, candidate) => Math.max(highest, similarity(token, candidate)), 0);
-    if (best >= 0.55) result += best * 3;
+    if (best >= 0.45) result += best * 3;
   }
   return result;
 }
