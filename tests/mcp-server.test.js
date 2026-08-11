@@ -33,24 +33,23 @@ describe('MCP hub server', () => {
       required: ['name', 'count', 'enabled', 'tags', 'options'],
     });
 
-    expect(shape.name.safeParse('brainstorming').success).toBe(true);
+    expect(shape.name.safeParse('hello-world').success).toBe(true);
     expect(shape.count.safeParse(5).success).toBe(true);
     expect(shape.count.safeParse(0).success).toBe(false);
     expect(shape.count.safeParse(11).success).toBe(false);
     expect(shape.count.safeParse(1.5).success).toBe(false);
     expect(shape.enabled.safeParse(true).success).toBe(true);
-    expect(shape.tags.safeParse(['tdd']).success).toBe(true);
+    expect(shape.tags.safeParse(['test']).success).toBe(true);
     expect(shape.options.safeParse({ mode: 'strict' }).success).toBe(true);
     expect(shape.options.safeParse({}).success).toBe(false);
   });
 
-  it('keeps logical namespaced names while sanitizing protocol names', async () => {
+  it('sanitizes protocol names without changing logical names', async () => {
     const tools = await listHubTools();
-    const superpowersTool = tools.find((tool) => tool.name === 'superpowers/list_skills');
+    const childTool = tools.find((tool) => tool.name === 'hello-world/dia-fruta');
 
-    expect(superpowersTool).toBeDefined();
-    expect(superpowersTool.name).toBe('superpowers/list_skills');
-    expect(superpowersTool.mcpName).toBe('superpowers.list_skills');
+    expect(childTool).toBeDefined();
+    expect(childTool.mcpName).toBe('hello-world.dia-fruta');
     expect(toMcpToolName('hello-world/dia-fruta')).toBe('hello-world.dia-fruta');
   });
 
