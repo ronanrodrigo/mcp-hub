@@ -2,11 +2,15 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta, diaFrutaTool } from './tools/dia-fruta.js';
+import { notesSearchHandlers } from './tools/notes-search.js';
 import { superpowersHandlers } from './tools/superpowers.js';
 import { loadAllMCPs } from './mcps-loader.js';
 
 const localToolHandlers = {
   'hello-world/dia-fruta': diaFruta,
+  'notes-search/search_notes': notesSearchHandlers.searchNotes,
+  'notes-search/search_tags': notesSearchHandlers.searchTags,
+  'notes-search/list_tags': notesSearchHandlers.listTags,
   'superpowers/list_skills': superpowersHandlers.listSkills,
   'superpowers/use_skill': superpowersHandlers.useSkill,
   'superpowers/get_skill_file': superpowersHandlers.getSkillFile,
