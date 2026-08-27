@@ -1,8 +1,9 @@
 import { HUB } from '../constants.js';
 import { loadAllMCPs } from '../mcps-loader.js';
+import { loadInstalledSkills, skillMcpMetadata } from '../skills-loader.js';
 
 export async function discovery() {
-  const mcps = await loadAllMCPs();
+  const mcps = [...(await loadAllMCPs()).filter((mcp) => mcp.name !== 'skills'), skillMcpMetadata(await loadInstalledSkills())];
   return {
     success: true,
     hub: { ...HUB, status: 'running' },

@@ -3,7 +3,9 @@ import { z } from 'zod';
 import { discovery, discoveryTool } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
 import { notesSearchHandlers } from './tools/notes-search.js';
+import { skillContent } from './tools/skills.js';
 import { loadAllMCPs } from './mcps-loader.js';
+import { loadInstalledSkills, skillMcpMetadata } from './skills-loader.js';
 
 const localToolHandlers = {
   'hello-world/dia-fruta': diaFruta,
@@ -48,7 +50,7 @@ function toMcpToolName(name) { return name.replaceAll('/', '.'); }
 function registerJsonTool(server, tool, handler) {
   server.registerTool(toMcpToolName(tool.name), { title: tool.title, description: tool.description, inputSchema: jsonSchemaToZodShape(tool.inputSchema) }, async (args) => {
     const result = await handler(args || {});
-    return { content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, ...(result?.success === false ? { isError: true } : {}) };
+    return { content: [{ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result) }], ...(result?.success === false ? { isError: true } : {}) };
   });
 }
 
@@ -57,14 +59,21 @@ function metadataToolToDefinition(mcp, metadataTool) {
   return { name, mcpName: toMcpToolName(name), title: metadataTool.title || `${mcp.name}: ${metadataTool.name}`, description: metadataTool.description || `Execute ${metadataTool.name} from MCP ${mcp.name}`, inputSchema: metadataTool.inputSchema || {} };
 }
 
+export async function loadHubMCPs() {
+  const mcps = await loadAllMCPs();
+  const skills = await loadInstalledSkills();
+  return [...mcps.filter((mcp) => mcp.name !== 'skills'), skillMcpMetadata(skills)];
+}
+
 export async function createMcpServer() {
   const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
   registerJsonTool(server, discoveryTool, discovery);
-  const mcps = await loadAllMCPs();
-  for (const mcp of mcps) {
+  for (const mcp of await loadHubMCPs()) {
     for (const metadataTool of mcp.tools || []) {
       const tool = metadataToolToDefinition(mcp, metadataTool);
-      const handler = localToolHandlers[tool.name];
+      const handler = tool.name.startsWith('skills/')
+        ? () => skillContent(metadataTool.name)
+        : localToolHandlers[tool.name];
       if (!handler) throw new Error(`Missing local adapter for ${tool.name}`);
       registerJsonTool(server, tool, handler);
     }
@@ -73,7 +82,7 @@ export async function createMcpServer() {
 }
 
 export async function listHubTools() {
-  const mcps = await loadAllMCPs();
+  const mcps = await loadHubMCPs();
   return [discoveryTool, ...mcps.flatMap((mcp) => (mcp.tools || []).map((tool) => metadataToolToDefinition(mcp, tool)))];
 }
 

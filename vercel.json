@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "npm run skills:install",
   "rewrites": [
     { "source": "/mcp", "destination": "/api/mcp" },
     { "source": "/start", "destination": "/api/start" },

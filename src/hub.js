@@ -1,6 +1,7 @@
 import { discovery } from './tools/discovery.js';
 import { diaFruta } from './tools/dia-fruta.js';
 import { notesSearchHandlers } from './tools/notes-search.js';
+import { skillContent } from './tools/skills.js';
 import { createMcpServer, listHubTools } from './mcp-server.js';
 
 const toolHandlers = {
@@ -15,6 +16,7 @@ export async function createHub() {
     server: await createMcpServer(),
     async callTool(name, args = {}) {
       if (name === 'discovery') return discovery(args);
+      if (name.startsWith('skills/')) return skillContent(name.slice('skills/'.length));
       const handler = toolHandlers[name];
       if (!handler) {
         const knownTools = (await listHubTools()).map((tool) => tool.name);

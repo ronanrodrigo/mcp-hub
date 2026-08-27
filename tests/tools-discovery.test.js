@@ -10,6 +10,7 @@ describe('discovery tool', () => {
     const result = await discovery();
     expect(result.success).toBe(true);
     expect(result.hub.status).toBe('running');
-    expect(result.mcps[0].endpoints).toHaveLength(1);
+    expect(result.mcps.map((mcp) => mcp.name)).toEqual(['hello-world', 'notes-search', 'skills']);
+    expect(result.mcps.find((mcp) => mcp.name === 'hello-world').endpoints).toHaveLength(1);
   });
 });
