@@ -1,3 +1,6 @@
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createMcpServer, jsonSchemaToZodShape, listHubTools, toMcpToolName } from '../src/mcp-server.js';
 import { createHub } from '../src/hub.js';
@@ -51,6 +54,25 @@ describe('MCP hub server', () => {
     expect(childTool).toBeDefined();
     expect(childTool.mcpName).toBe('hello-world.dia-fruta');
     expect(toMcpToolName('hello-world/dia-fruta')).toBe('hello-world.dia-fruta');
+  });
+
+  it('automatically exposes every discovered skill as a namespaced tool', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'mcp-dynamic-tools-'));
+    const skills = ['alpha', 'beta'];
+    for (const name of skills) {
+      const directory = path.join(root, name);
+      await mkdir(directory, { recursive: true });
+      await writeFile(path.join(directory, 'SKILL.md'), `---\nname: ${name}\ndescription: ${name} skill\n---\n\n${name} content.\n`);
+    }
+
+    const initialTools = await listHubTools(root);
+    expect(initialTools.map((tool) => tool.name)).toEqual(expect.arrayContaining(skills.map((name) => `skills/${name}`)));
+
+    await mkdir(path.join(root, 'gamma'), { recursive: true });
+    await writeFile(path.join(root, 'gamma', 'SKILL.md'), '---\nname: gamma\ndescription: gamma skill\n---\n\ngamma content.\n');
+
+    const updatedTools = await listHubTools(root);
+    expect(updatedTools.map((tool) => tool.name)).toEqual(expect.arrayContaining(['skills/alpha', 'skills/beta', 'skills/gamma']));
   });
 
   it('executes a namespaced child MCP tool', async () => {

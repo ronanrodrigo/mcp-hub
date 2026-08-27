@@ -59,16 +59,16 @@ function metadataToolToDefinition(mcp, metadataTool) {
   return { name, mcpName: toMcpToolName(name), title: metadataTool.title || `${mcp.name}: ${metadataTool.name}`, description: metadataTool.description || `Execute ${metadataTool.name} from MCP ${mcp.name}`, inputSchema: metadataTool.inputSchema || {} };
 }
 
-export async function loadHubMCPs() {
+export async function loadHubMCPs(skillsDirectory) {
   const mcps = await loadAllMCPs();
-  const skills = await loadInstalledSkills();
+  const skills = await loadInstalledSkills(skillsDirectory);
   return [...mcps.filter((mcp) => mcp.name !== 'skills'), skillMcpMetadata(skills)];
 }
 
-export async function createMcpServer() {
+export async function createMcpServer(skillsDirectory) {
   const server = new McpServer({ name: 'mcp-hub', version: '1.0.0' });
   registerJsonTool(server, discoveryTool, discovery);
-  for (const mcp of await loadHubMCPs()) {
+  for (const mcp of await loadHubMCPs(skillsDirectory)) {
     for (const metadataTool of mcp.tools || []) {
       const tool = metadataToolToDefinition(mcp, metadataTool);
       const handler = tool.name.startsWith('skills/')
@@ -81,8 +81,8 @@ export async function createMcpServer() {
   return server;
 }
 
-export async function listHubTools() {
-  const mcps = await loadHubMCPs();
+export async function listHubTools(skillsDirectory) {
+  const mcps = await loadHubMCPs(skillsDirectory);
   return [discoveryTool, ...mcps.flatMap((mcp) => (mcp.tools || []).map((tool) => metadataToolToDefinition(mcp, tool)))];
 }
 
