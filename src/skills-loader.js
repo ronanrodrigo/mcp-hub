@@ -84,7 +84,7 @@ export function skillMcpMetadata(skills) {
   return {
     name: 'skills',
     version: 'dynamic',
-    description: 'Skills installed from ronanrodrigo/skills via the Skills npm CLI.',
+    description: 'Skills installed from ronanrodrigo/skills during the build.',
     author: 'ronanrodrigo',
     source: 'https://github.com/ronanrodrigo/skills',
     transport: 'streamable-http',

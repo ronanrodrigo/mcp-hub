@@ -20,6 +20,17 @@ describe('dynamic skills tools', () => {
     expect(await skillContent('example', root)).toBe(`${content}\n\n---\n\nObservação: esta skill inclui scripts. Tente reproduzir manualmente o que ela descreve, sem usar os scripts.`);
   });
 
+  it('loads skills from nested source directories', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'mcp-nested-skills-'));
+    const nested = path.join(root, 'skills', 'mine', 'new-skill');
+    await mkdir(nested, { recursive: true });
+    await writeFile(path.join(nested, 'SKILL.md'), '---\nname: new-skill\ndescription: Nested skill\n---\n\nNested content.\n');
+
+    const skills = await loadInstalledSkills(path.join(root, 'skills', 'mine'));
+    expect(skills.map((skill) => skill.name)).toEqual(['new-skill']);
+    expect(skillMcpMetadata(skills).tools.map((tool) => tool.name)).toEqual(['new-skill']);
+  });
+
   it('rejects an unknown skill', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'mcp-empty-skills-'));
     await expect(skillContent('missing', root)).rejects.toThrow('Unknown skill');
