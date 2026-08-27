@@ -9,13 +9,18 @@ if (!token) {
   );
 }
 
+const credentials = Buffer
+  .from(`x-access-token:${token}`)
+  .toString('base64');
+
 execFileSync('npx', ['--yes', 'skills@latest', 'add', source, '--all', '--copy'], {
   stdio: 'inherit',
   env: {
     ...process.env,
     CI: '1',
+    GIT_TERMINAL_PROMPT: '0',
     GIT_CONFIG_COUNT: '1',
-    GIT_CONFIG_KEY_0: 'http.https://github.com/.extraheader',
-    GIT_CONFIG_VALUE_0: `AUTHORIZATION: bearer ${token}`,
+    GIT_CONFIG_KEY_0: 'http.extraHeader',
+    GIT_CONFIG_VALUE_0: `Authorization: Basic ${credentials}`,
   },
 });
