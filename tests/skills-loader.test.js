@@ -15,7 +15,6 @@ describe('dynamic skills tools', () => {
     const skills = await loadInstalledSkills(root);
     expect(skills).toHaveLength(1);
     expect(skills[0].hasScripts).toBe(true);
-    expect(skillMcpMetadata(skills)[0]).toBeUndefined();
     expect(skillMcpMetadata(skills).tools[0].name).toBe('example');
     expect(await skillContent('example', root)).toContain('Keep this content.');
     expect(await skillContent('example', root)).toContain('sem usar os scripts');

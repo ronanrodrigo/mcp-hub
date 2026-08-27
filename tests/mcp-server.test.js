@@ -8,6 +8,7 @@ describe('MCP hub server', () => {
 
     const tools = await listHubTools();
     expect(tools.length).toBeGreaterThan(1);
+    expect(tools.some((tool) => tool.name === 'skills/agenda')).toBe(true);
     for (const tool of tools) {
       const protocolName = toMcpToolName(tool.name);
       expect(protocolName).toMatch(/^[A-Za-z0-9_.-]+$/);
