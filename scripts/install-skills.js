@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const source = 'https://github.com/ronanrodrigo/skills';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const destination = path.join(projectRoot, '.agents', 'skills');
+const destination = path.join(projectRoot, 'src', 'installed-skills');
 const token = process.env.GITHUB_TOKEN || process.env.VERCEL_GITHUB_TOKEN;
 
 if (!token) {
