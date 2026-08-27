@@ -8,15 +8,15 @@ Todas as tools dos MCPs filhos são publicadas com o nome `{nome-do-mcp}/{tool}`
 
 ## Skills dinâmicas
 
-As skills de `https://github.com/ronanrodrigo/skills` são obtidas durante o build com o Skills CLI executado via `npx`:
+As skills de `https://github.com/ronanrodrigo/skills` são obtidas durante o build com um clone Git raso (`--depth 1`). O build copia somente os arquivos `SKILL.md` para `.agents/skills`, sem scripts, testes ou fontes TypeScript da origem:
 
 ```bash
-npx skills@latest add https://github.com/ronanrodrigo/skills --skill '*' --agent codex --yes --copy
+git clone --depth 1 https://github.com/ronanrodrigo/skills
 ```
 
 Cada diretório instalado que contém `SKILL.md` vira uma tool namespaced `skills/{nome-da-skill}`. A tool retorna o conteúdo textual puro do `SKILL.md`, sem executar scripts ou outros arquivos da skill. Quando a skill contém um diretório `scripts`, a resposta inclui uma observação para reproduzir manualmente suas instruções sem usar os scripts.
 
-A descoberta acontece durante cada inicialização do servidor a partir dos arquivos instalados pelo build. Portanto, adicionar ou atualizar uma skill no repositório de origem exige somente um novo deploy; não exige alteração no código do Hub. O build falha se a instalação via CLI falhar.
+A descoberta acontece durante cada inicialização do servidor a partir dos arquivos instalados pelo build. Portanto, adicionar ou atualizar uma skill no repositório de origem exige somente um novo deploy; não exige alteração no código do Hub. O build falha se o clone ou a cópia das skills falhar.
 
 ## Tools atuais
 
