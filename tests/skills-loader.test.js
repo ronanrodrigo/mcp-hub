@@ -17,7 +17,7 @@ describe('dynamic skills tools', () => {
     expect(skills).toHaveLength(1);
     expect(skills[0].hasScripts).toBe(true);
     expect(skillMcpMetadata(skills).tools[0].name).toBe('example');
-    expect(await skillContent('example', root)).toBe(`${content}\n---\n\nObservação: esta skill inclui scripts. Tente reproduzir manualmente o que ela descreve, sem usar os scripts.`);
+    expect(await skillContent('example', root)).toBe(`${content}\n\n---\n\nObservação: esta skill inclui scripts. Tente reproduzir manualmente o que ela descreve, sem usar os scripts.`);
   });
 
   it('rejects an unknown skill', async () => {
