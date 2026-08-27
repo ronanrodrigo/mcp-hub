@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { cp, mkdtemp, readdir, rm, mkdir } from 'node:fs/promises';
+import { access, cp, mkdir, mkdtemp, readdir, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +39,11 @@ try {
   for (const entry of entries) {
     if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
     const skillFile = path.join(cloneDirectory, entry.name, 'SKILL.md');
+    try {
+      await access(skillFile);
+    } catch {
+      continue;
+    }
     const targetDirectory = path.join(destination, entry.name);
     await mkdir(targetDirectory, { recursive: true });
     await cp(skillFile, path.join(targetDirectory, 'SKILL.md'));
