@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { createMcpServer, jsonSchemaToZodShape, listHubTools, toMcpToolName } from '../src/mcp-server.js';
 import { createHub } from '../src/hub.js';
 
@@ -51,6 +53,20 @@ describe('MCP hub server', () => {
     expect(childTool).toBeDefined();
     expect(childTool.mcpName).toBe('hello-world.dia-fruta');
     expect(toMcpToolName('hello-world/dia-fruta')).toBe('hello-world.dia-fruta');
+  });
+
+  it('returns a newly installed skill through the default runtime path', async () => {
+    const directory = path.resolve('src', 'installed-skills', 'runtime-regression-skill');
+    await mkdir(directory, { recursive: true });
+    await writeFile(path.join(directory, 'SKILL.md'), '---\nname: runtime-regression-skill\ndescription: Runtime regression skill\n---\n\nRuntime content.\n');
+
+    try {
+      const tools = await listHubTools();
+      expect(tools.map((tool) => tool.name)).toContain('skills/runtime-regression-skill');
+      expect(tools.find((tool) => tool.name === 'skills/runtime-regression-skill').mcpName).toBe('skills.runtime-regression-skill');
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 
   it('executes a namespaced child MCP tool', async () => {
