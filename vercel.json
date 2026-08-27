@@ -1,6 +1,10 @@
 {
   "version": 2,
   "buildCommand": "npm run skills:install",
+  "functions": {
+    "api/mcp.js": { "includeFiles": "src/installed-skills/**" },
+    "api/start.js": { "includeFiles": "src/installed-skills/**" }
+  },
   "rewrites": [
     { "source": "/mcp", "destination": "/api/mcp" },
     { "source": "/start", "destination": "/api/start" },

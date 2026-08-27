@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const defaultSkillDirectories = [
-  path.join(projectRoot, '.agents', 'skills'),
+  path.join(projectRoot, 'installed-skills'),
+  path.join(projectRoot, 'src', 'installed-skills'),
   path.join(projectRoot, '.codex', 'skills'),
   path.join(projectRoot, '.claude', 'skills'),
   path.join(projectRoot, '.cursor', 'skills'),
