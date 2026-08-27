@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { access, cp, mkdir, mkdtemp, readdir, rm } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readdir, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,19 +35,24 @@ try {
   await rm(destination, { recursive: true, force: true });
   await mkdir(destination, { recursive: true });
 
-  const entries = await readdir(cloneDirectory, { withFileTypes: true });
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
-    const skillFile = path.join(cloneDirectory, entry.name, 'SKILL.md');
-    try {
-      await access(skillFile);
-    } catch {
-      continue;
+  async function copySkills(directory) {
+    const entries = await readdir(directory, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name.startsWith('.')) continue;
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        await copySkills(entryPath);
+        continue;
+      }
+      if (entry.name !== 'SKILL.md') continue;
+      const skillDirectory = path.basename(path.dirname(entryPath));
+      const targetDirectory = path.join(destination, skillDirectory);
+      await mkdir(targetDirectory, { recursive: true });
+      await cp(entryPath, path.join(targetDirectory, 'SKILL.md'));
     }
-    const targetDirectory = path.join(destination, entry.name);
-    await mkdir(targetDirectory, { recursive: true });
-    await cp(skillFile, path.join(targetDirectory, 'SKILL.md'));
   }
+
+  await copySkills(cloneDirectory);
 } finally {
   await rm(cloneDirectory, { recursive: true, force: true });
 }
