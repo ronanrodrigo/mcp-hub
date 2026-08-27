@@ -5,7 +5,6 @@ describe('MCP loader', () => {
   it('loads metadata from the current properties.json files', async () => {
     const mcps = await loadAllMCPs();
     expect(Array.isArray(mcps)).toBe(true);
-    expect(mcps).toHaveLength(3);
     expect(mcps.map((mcp) => mcp.name)).toEqual(['hello-world', 'notes-search', 'skills']);
   });
 
