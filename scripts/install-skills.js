@@ -13,7 +13,7 @@ const credentials = Buffer
   .from(`x-access-token:${token}`)
   .toString('base64');
 
-execFileSync('npx', ['--yes', 'skills@latest', 'add', source, '--all', '--copy'], {
+execFileSync('npx', ['--yes', 'skills@latest', 'add', source, '--skill', '*', '--agent', 'codex', '--yes', '--copy'], {
   stdio: 'inherit',
   env: {
     ...process.env,
