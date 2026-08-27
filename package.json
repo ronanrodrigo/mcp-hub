@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npx --yes vercel@latest dev",
     "skills:install": "node scripts/install-skills.js",
-    "build": "npm run skills:install",
+    "predev": "npm run skills:install",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage"
