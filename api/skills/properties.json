@@ -1,0 +1,11 @@
+{
+  "name": "skills",
+  "version": "dynamic",
+  "description": "Skills installed from ronanrodrigo/skills via the Skills npm CLI.",
+  "author": "ronanrodrigo",
+  "source": "https://github.com/ronanrodrigo/skills",
+  "transport": "streamable-http",
+  "tags": ["skills", "agents", "instructions"],
+  "tools": [],
+  "endpoints": []
+}
