@@ -12,6 +12,7 @@ const localToolHandlers = {
   'notes-search/search_notes': notesSearchHandlers.searchNotes,
   'notes-search/search_tags': notesSearchHandlers.searchTags,
   'notes-search/list_tags': notesSearchHandlers.listTags,
+  'notes-search/get_note': notesSearchHandlers.getNote,
 };
 
 function jsonSchemaToZodShape(schema = {}) {

@@ -25,6 +25,7 @@ A descoberta acontece durante cada inicialização do servidor a partir dos arqu
 * `notes-search/search_notes`: pesquisa notas técnicas com correspondência exata, parcial, por tokens e fuzzy search.
 * `notes-search/search_tags`: pesquisa tags com correspondência exata, parcial e fuzzy search.
 * `notes-search/list_tags`: lista ou ranqueia as tags disponíveis.
+* `notes-search/get_note`: busca o conteúdo markdown completo de uma nota pelo slug (aceita também a URL do post ou a markdown_url).
 * `skills/{nome-da-skill}`: retorna o conteúdo puro de cada skill instalada do repositório de skills.
 
 ## Notes Search
