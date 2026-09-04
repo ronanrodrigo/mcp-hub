@@ -1,6 +1,7 @@
 const NOTES_INDEX_URL = 'https://ronanrodrigo.dev/notes/index.json';
 const TAGS_INDEX_URL = 'https://ronanrodrigo.dev/notes/list-tags.json';
 const DEFAULT_LIMIT = 10;
+const MAX_MARKDOWN_CHARS = 40000;
 
 function normalize(value) {
   return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -42,6 +43,29 @@ function score(item, query) {
     if (best >= 0.45) result += best * 3;
   }
   return result;
+}
+
+function extractSlug(value) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return '';
+  if (!trimmed.includes('/')) return trimmed;
+  const withoutQuery = trimmed.split(/[?#]/)[0];
+  const segments = withoutQuery.split('/').filter(Boolean);
+  if (!segments.length) return trimmed;
+  let last = segments[segments.length - 1];
+  if (/\.md$/i.test(last) && segments.length > 1) last = segments[segments.length - 2];
+  return last;
+}
+
+async function fetchText(url) {
+  let response;
+  try {
+    response = await fetch(url, { headers: { accept: 'text/markdown, text/plain' }, signal: AbortSignal.timeout(8000) });
+  } catch (error) {
+    throw new Error(`Unable to fetch note markdown: ${error.message}`);
+  }
+  if (!response.ok) throw new Error(`Note markdown request failed with HTTP ${response.status}`);
+  try { return await response.text(); } catch { throw new Error('Note markdown endpoint returned an unreadable body'); }
 }
 
 function limit(value, fallback = DEFAULT_LIMIT, maximum = 50) {
@@ -99,5 +123,23 @@ export async function listTags({ query = '', max_results = 200 } = {}) {
   } catch (error) { return failure(error); }
 }
 
-export const notesSearchHandlers = { searchNotes, searchTags, listTags };
+export async function getNote({ slug } = {}) {
+  const raw = String(slug ?? '').trim();
+  if (!raw) return failure('slug is required');
+  const wanted = extractSlug(raw);
+  let notes;
+  try {
+    notes = await fetchJson(NOTES_INDEX_URL);
+  } catch (error) { return failure(error); }
+  const entry = notes.find((note) => note.slug === wanted || note.slug === raw || note.url === raw || note.markdown_url === raw);
+  if (!entry) return failure(`note not found for slug: ${wanted}`);
+  if (!entry.markdown_url) return failure(`note has no markdown_url for slug: ${wanted}`);
+  try {
+    const markdown = await fetchText(entry.markdown_url);
+    const truncated = markdown.length > MAX_MARKDOWN_CHARS;
+    return { success: true, slug: entry.slug, title: entry.title ?? null, url: entry.url ?? null, markdown: truncated ? markdown.slice(0, MAX_MARKDOWN_CHARS) : markdown, truncated };
+  } catch (error) { return failure(error); }
+}
+
+export const notesSearchHandlers = { searchNotes, searchTags, listTags, getNote };
 export { distance, normalize, score };

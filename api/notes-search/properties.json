@@ -49,6 +49,19 @@
         "required": [],
         "additionalProperties": false
       }
+    },
+    {
+      "name": "get_note",
+      "title": "Get note content",
+      "description": "Fetch the full markdown content of a published note by slug (also accepts the post URL or markdown_url).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": { "type": "string", "description": "Note slug, post URL or markdown_url." }
+        },
+        "required": ["slug"],
+        "additionalProperties": false
+      }
     }
   ],
   "endpoints": []
